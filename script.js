@@ -23,6 +23,7 @@ class PianoKey {
         this.color = "";
     }
 
+    // Se dessine
     draw(){
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -31,14 +32,16 @@ class PianoKey {
         ctx.strokeRect(this.x, this.y, this.width, this.height);
     }
     
+    // Affiche le nom de la note
     displayNote(){
         ctx.font = "20px sans-serif";
         ctx.fillText(this.note, this.x, this.height + 60);
     }
 
+    // Gère quand on presse sur une touche
     handleClick(mx, my){
+        // Si la souris est sur la touche
         if (mx >= this.x && mx <= this.x + this.width && my >= this.y && my <= this.y + this.height){
-            console.log("exe");
             playNote(this.note)
         }
     }
@@ -49,7 +52,7 @@ class PianoKey {
 // Les touches blanches
 class WhiteKey extends PianoKey{
     constructor(x, y, note){
-        super(x, y, note);
+        super(x, y, note);  // Appelle du constructeur parent
         this.width = 80;
         this.height = 300;
         this.color = "white";
@@ -74,12 +77,14 @@ function playNote(note){
     // Si c'est pas une touche blanche
     if (whiteNotes.findIndex(not => not === note) === -1){
         i = blackNotes.findIndex(not => not === note);
-        uniNote = blackNotesUni[i]; // Conversion
+        uniNote = blackNotesUni[i]; // Conversion en format anglophone
     }else{
         i = whiteNotes.findIndex(not => not === note);
         uniNote = whiteNotesUni[i];
     }
+    // L'index du nom de fichier mp3
     let iMp3 = realNotes.findIndex(not => not.includes(uniNote));
+    // Création du tag audio
     let audio = new Audio("notes/"+realNotes[iMp3]);
     audio.play();
 }
@@ -94,10 +99,12 @@ let blackNotesUni = ["C#5", "D#5", "F#5", "A#5", "B#5"];
 
 let pianoKeys = [];
 
+// Création des touches blanches
 for (let i=0; i < whiteNotes.length; i++){
     pianoKeys.push(new WhiteKey(20 + 80*i, 20, whiteNotes[i]));
 }
 
+// Création des touches noires
 for (let i=0; i < blackNotes.length; i++){
     if(i >= 2){
         pianoKeys.push(new BlackKey(85 + 80*(i+1), 20, blackNotes[i]));
@@ -107,11 +114,13 @@ for (let i=0; i < blackNotes.length; i++){
     
 }
 
+// Affichage des touches
 for (let i=0; i < pianoKeys.length; i++){
     pianoKeys[i].draw();
     pianoKeys[i].displayNote();
 }
 
+// Gestion du clique
 canvas.addEventListener("click", (e) => {
     let rect = canvas.getBoundingClientRect();
     for (key of pianoKeys){
